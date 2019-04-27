@@ -23,13 +23,6 @@ function microtime_float()
     return ((float)$usec + (float)$sec);
 }
 
-function fillArray(){
-	$array = array();
-	for($i=0; $i<10000; $i++){
-		$array[] = rand(0,9999);
-	}
-	return $array;
-}
 
 function radixSort($array){
 	//Create a bucket of arrays
@@ -62,11 +55,7 @@ function radixSort($array){
 	}
 	return $array;
 }
-$time_start = microtime_float();
-$array = radixSort(fillArray());
-$time_end = microtime_float();
-$duration = $time_end - $time_start;
-echo $duration;
+
 //Finishes sorting 10000 elements in ~0.68 seconds
 
 
@@ -167,6 +156,7 @@ $data = $_POST;
 	if(isset($data['do_send'])) {
 		$first = $data['field1'];
 		$second = $data['field2'];
+		$time_start = microtime_float();
 		if($data['field1']) {
 			if($data['field2']) {
 				$messages = R::findAll('messages', "ORDER BY $first, $second");
@@ -183,8 +173,13 @@ $data = $_POST;
 			$messages = R::findAll('messages', "ORDER BY $first");
 		} else
 				$messages = R::findAll('messages', "ORDER BY ID");
+
+				$time_end = microtime_float();
+				$duration = $time_end - $time_start;
+				echo "Час, витрачений на сортування: ".$duration;
 	} else
 	$messages = R::findAll('messages', "ORDER BY ID");
+
 ?>
 
 
