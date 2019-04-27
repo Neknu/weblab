@@ -17,6 +17,58 @@
 <?php
 
 
+function microtime_float()
+{
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+
+function fillArray(){
+	$array = array();
+	for($i=0; $i<10000; $i++){
+		$array[] = rand(0,9999);
+	}
+	return $array;
+}
+
+function radixSort($array){
+	//Create a bucket of arrays
+	$bucket = array_fill(0, 9, array());
+	$maxDigits = 0;
+	//Determine the maximum number of digits in the given array.
+	foreach($array as $value){
+		$numDigits = strlen((string)$value);
+		if($numDigits > $maxDigits)
+			$maxDigits = $numDigits;
+	}
+	$nextSigFig = false;
+	for($k=0; $k<$maxDigits; $k++){
+		foreach($array as $a){
+			if(!$nextSigFig)
+				$bucket[($a->priority)%10][] =  $a;
+			else
+				$bucket[floor((($a->priority)/pow(10,$k)))%10][] =  $a;
+		}
+		//Reset array and load back values from bucket.
+		$array = array();
+		for($j=0; $j<count($bucket); $j++){
+			foreach($bucket[$j] as $value){
+				$array[] = $value;
+			}
+		}
+		//Reset bucket
+		$bucket = array_fill(0, 9, array());
+		$nextSigFig= true;
+	}
+	return $array;
+}
+$time_start = microtime_float();
+$array = radixSort(fillArray());
+$time_end = microtime_float();
+$duration = $time_end - $time_start;
+echo $duration;
+//Finishes sorting 10000 elements in ~0.68 seconds
+
 
 function countSort($arr)
 {
@@ -57,12 +109,6 @@ function countSort($arr)
 					$i++;
 				}
 			}
-			
-			foreach ($output as $a) {
-						echo $a->type." ";
-			echo $count[$i]." ";
-			$i++;
-		}
 
 			return $output;
 }
@@ -111,23 +157,6 @@ function heapSort(&$arr, $n)
 }
 
 
-function printArray(&$arr, $n)
-{
-    for ($i = 0; $i < $n; ++$i)
-        echo ($arr[$i]." ") ;
-
-}
-
-
-    // $arr = array(12, 11, 13, 5, 6, 7);
-    // $n = sizeof($arr)/sizeof($arr[0]);
-
-    //countSort($arr, $n);
-
-    // echo 'Sorted array is ' . "\n";
-		//
-    // printArray($arr , $n);
-
 ?>
 
 
@@ -145,6 +174,10 @@ $data = $_POST;
 			elseif ($first == "type") {
 				$messages = R::findAll('messages');
 				$messages = countSort($messages);
+			}
+			elseif ($first == "priority") {
+				$messages = R::findAll('messages');
+				$messages = radixSort($messages);
 			}
 			else
 			$messages = R::findAll('messages', "ORDER BY $first");
