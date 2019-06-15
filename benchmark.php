@@ -4,6 +4,7 @@
 
 date_default_timezone_set('Europe/Kiev');
 
+echo '<pre>';
 
 $time = 0;
 $n = 4;
@@ -20,9 +21,13 @@ delete_msg($n / 2);
 $time_end = microtime_float();
 $time = $time_end - $time_start;
 $n = $n*2;
-echo "Час виконання: $time секунд\n";
+echo "Час виконання: $time секунд";
+echo '<br>';
 }
 echo "Значення N(к-ть повідомлень) = ". $n;
+echo '<br>';
+echo "Було використано ".memory_get_usage()."байтів пам'яті.";
+echo '<br>';
 
 
 function add_server($n) {
