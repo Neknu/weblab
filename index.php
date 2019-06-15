@@ -176,7 +176,11 @@ $data = $_POST;
 
 				$time_end = microtime_float();
 				$duration = $time_end - $time_start;
-				echo "Час, витрачений на сортування: ".$duration;
+				echo "Сортування за полями: $first"." $second";
+				echo '<br>';
+				echo "Час, витрачений на сортування(c): ".$duration;
+				echo '<br>';
+				echo "Пам'ять витрачена на сортування(кб): ".memory_get_usage() /1024;
 	} else
 	$messages = R::findAll('messages', "ORDER BY ID");
 
